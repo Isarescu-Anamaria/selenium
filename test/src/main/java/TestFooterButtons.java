@@ -41,7 +41,7 @@ public class TestFooterButtons {
             Assert.fail();
         }
         contactMailButton.click();
-
+        // to be continued...
     }
 
     //Wix page button from the footer
