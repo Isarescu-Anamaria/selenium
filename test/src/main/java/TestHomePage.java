@@ -60,10 +60,19 @@ public class TestHomePage {
         driver.get("https://ancabota09.wixsite.com/intern");
         //identify button with partial link text
         WebElement bookNowButton = driver.findElement(By.linkText("BOOK NOW"));
-        bookNowButton.click();
-        System.out.println("title of page is: " + driver.getTitle());
-        String bookNowPage = driver.getTitle();
-        String bookNowTitle ="BOOK NOW | Intern";
-        Assert.assertEquals(bookNowPage, bookNowTitle, "The wrong page is loaded!");
+        boolean var = driver.findElement(By.partialLinkText("BOOK NOW")).isDisplayed();
+        if (var) {
+            System.out.println("BOOK NOW button is displayed");
+            bookNowButton.click();
+        }
+        else{
+            System.out.println("BOOK NOW button is not displayed");
+            Assert.fail();
+        }
+
+        System.out.println("URL of the page is: " + driver.getCurrentUrl());
+        String bookNowPageURL = driver.getCurrentUrl();
+        String bookNowURL ="https://ancabota09.wixsite.com/intern/booknow";
+        Assert.assertEquals(bookNowPageURL, bookNowURL, "The wrong page is loaded!");
     }
 }
