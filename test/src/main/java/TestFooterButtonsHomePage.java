@@ -2,14 +2,17 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-public class TestFooterButtons {
+public class TestFooterButtonsHomePage {
 
     private WebDriver driver;
 
@@ -31,7 +34,9 @@ public class TestFooterButtons {
         //URL launch
         driver.get("https://ancabota09.wixsite.com/intern");
         //identify button with
-        WebElement contactMailButton = driver.findElement(By.xpath("//*[@id=\"i71ww6nk\"]/p[1]/a"));
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement contactMailButton =  wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"i71ww6nk\"]/p[1]/a")));
         boolean var = driver.findElement(By.xpath("//*[@id=\"i71ww6nk\"]/p[1]/a")).isDisplayed();
         if (var) {
             System.out.println("Contact Mail button is displayed");
@@ -41,7 +46,14 @@ public class TestFooterButtons {
             Assert.fail();
         }
         contactMailButton.click();
-        // to be continued...
+        wait.until(driver -> true);
+
+         //Verify the href attribute contains the mailto link
+        String href = contactMailButton.getAttribute("href");
+        Assert.assertTrue(href.startsWith("mailto:"), "The Contact link does not contain a 'mailto' link.");
+
+         //Optionally, check the specific email address if needed
+         Assert.assertTrue(href.contains("info@mysite.com"), "The 'Contact Us' link does not contain the expected email address.");
     }
 
     //Wix page button from the footer
@@ -82,4 +94,5 @@ public class TestFooterButtons {
         driver.switchTo().window(initialWindowHandle);
         System.out.println("Returned to the initial page: " + driver.getCurrentUrl());
     }
+
 }

@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 
 import java.util.concurrent.TimeUnit;
 
-public class TestFooterSocialMedia {
+public class TestFooterSocialMediaHomePage {
 
     private WebDriver driver;
 
