@@ -79,7 +79,8 @@ public class SearchWidgetHomePage {
         driver.switchTo().frame(iframeCheckInCalendar);
 
         //click on today
-        WebElement today = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div/main/div/div[2]/table/tbody/tr[2]/td[4]/button/span")));
+        //se schimba today xpath!!!!!(de pe data)
+        WebElement today = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div/main/div/div[2]/table/tbody/tr[2]/td[5]/button/span")));
         // Verifică dacă butonul este vizibil
         Assert.assertTrue(today.isDisplayed(), "Check in calendar today button is not displayed");
         today.click();
@@ -207,7 +208,8 @@ public class SearchWidgetHomePage {
         driver.switchTo().frame(iframeCheckOutCalendar);
 
         //click on tomorrow
-        WebElement tomorrow = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div/main/div/div[2]/table/tbody/tr[2]/td[5]/button/span")));
+        //se schimba tomorrow xpath(data de pe calendar)
+        WebElement tomorrow = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div/main/div/div[2]/table/tbody/tr[2]/td[6]/button/span")));
         // Verifică dacă butonul este vizibil
         Assert.assertTrue(tomorrow.isDisplayed(), "Check out calendar tomorrow button is not displayed");
         tomorrow.click();
@@ -295,6 +297,245 @@ public class SearchWidgetHomePage {
         System.out.println("Actual Backward month is: " + actualBackwardMonth);
 
         Assert.assertEquals(actualBackwardMonth, expectedBackwardMonth,"Backward month does not corespond!");
+    }
+
+    @Test
+    public void testAdultsCounter(){
+
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        // URL launch
+        driver.get("https://ancabota09.wixsite.com/intern");
+        // Explicit wait
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement iframe = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
+        driver.switchTo().frame(iframe);
+
+        //Check if by default the counter displays "1"
+
+        WebElement adultsNumber = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]/span[1]")));
+        // Verifică dacă este vizibil
+        Assert.assertTrue(adultsNumber.isDisplayed(), "Adults number is not displayed");
+
+        String actualNumberOfAdults = adultsNumber.getText();
+        String expectedNumberOfAdults = "1";
+        System.out.println("Actual number of adults is: " + actualNumberOfAdults);
+        Assert.assertEquals(actualNumberOfAdults,expectedNumberOfAdults,"The number of adults is not set by default to 1!");
+
+        //Check if you can decrement to less than one adult
+        WebElement decrementButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]/a[2]")));
+        decrementButton.click();
+        String actualNumberOfAdultsAfterDecrement = adultsNumber.getText();
+        System.out.println("Actual number of adults after decrement is: " + actualNumberOfAdultsAfterDecrement);
+        Assert.assertEquals(actualNumberOfAdultsAfterDecrement,expectedNumberOfAdults,"The number of adults is decrement to less 1!");
+
+        //Check if you can increment the Adults number
+        WebElement incrementButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]/a[1]")));
+        int numberOfClicksIncrement = 2;
+        // Clic pe butonul de incrementare
+        for (int i = 0; i < numberOfClicksIncrement; i++) {
+            incrementButton.click();
+        }
+
+        String actualNumberOfAdultsAfterIncrement = adultsNumber.getText();
+        String expectedNumberOfAdultsAfterIncrement = String.valueOf(1 + numberOfClicksIncrement);
+        System.out.println("Actual number of adults after increment is: " + actualNumberOfAdultsAfterIncrement);
+        System.out.println("Expected number of adults after increment is: " + expectedNumberOfAdultsAfterIncrement);
+        Assert.assertEquals(actualNumberOfAdultsAfterIncrement, expectedNumberOfAdultsAfterIncrement, "The number of adults after increment does not match the expected value!");
+
+        //Check if you can decrement the Adults number
+        int numberOfClicksDecrement = 1;
+        // Clic pe butonul de incrementare
+        for (int i = 0; i < numberOfClicksDecrement; i++) {
+            decrementButton.click();
+        }
+
+        String actualNumberOfAdultsAfterSecondDecrement = adultsNumber.getText();
+        String expectedNumberOfAdultsAfterSecondDecrement = String.valueOf(1 + numberOfClicksDecrement);
+        System.out.println("Actual number of adults after the second decrement is: " + actualNumberOfAdultsAfterSecondDecrement);
+        System.out.println("Expected number of adults after the second decrement is: " + expectedNumberOfAdultsAfterSecondDecrement);
+        Assert.assertEquals(actualNumberOfAdultsAfterSecondDecrement, expectedNumberOfAdultsAfterSecondDecrement, "The number of adults after the second decrement does not match the expected value!");
+    }
+
+    @Test
+    public void testKidsCounter(){
+
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        // URL launch
+        driver.get("https://ancabota09.wixsite.com/intern");
+        // Explicit wait
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement iframe = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
+        driver.switchTo().frame(iframe);
+
+        //Check if by default the counter displays "0"
+
+        WebElement kidsNumber = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"children\"]/span[1]")));
+        // Verifică dacă este vizibil
+        Assert.assertTrue(kidsNumber.isDisplayed(), "Kids number is not displayed");
+
+        String actualNumberOfKids = kidsNumber.getText();
+        String expectedNumberOfKids = "0";
+        System.out.println("Actual number of kids is: " + actualNumberOfKids);
+        Assert.assertEquals(actualNumberOfKids,expectedNumberOfKids,"The number of kids is not set by default to 0!");
+
+        //Check if you can decrement to less than zero kids
+        WebElement decrementButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"children\"]/a[2]")));
+        decrementButton.click();
+        String actualNumberOfKidsAfterDecrement = kidsNumber.getText();
+        System.out.println("Actual number of kids after decrement is: " + actualNumberOfKidsAfterDecrement);
+        Assert.assertEquals(actualNumberOfKidsAfterDecrement,expectedNumberOfKids,"The number of kids is decrement to less 0!");
+
+        //Check if you can increment the Kids number
+        WebElement incrementButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"children\"]/a[1]")));
+        int numberOfClicksIncrement = 2;
+        // Clic pe butonul de incrementare
+        for (int i = 0; i < numberOfClicksIncrement; i++) {
+            incrementButton.click();
+        }
+
+        String actualNumberOfKidsAfterIncrement = kidsNumber.getText();
+        String expectedNumberOfKidsAfterIncrement = String.valueOf(0 + numberOfClicksIncrement);
+        System.out.println("Actual number of kids after increment is: " + actualNumberOfKidsAfterIncrement);
+        System.out.println("Expected number of kids after increment is: " + expectedNumberOfKidsAfterIncrement);
+        Assert.assertEquals(actualNumberOfKidsAfterIncrement, expectedNumberOfKidsAfterIncrement, "The number of kids after increment does not match the expected value!");
+
+        //Check if you can decrement the Kids number
+        int numberOfClicksDecrement = 1;
+        // Clic pe butonul de incrementare
+        for (int i = 0; i < numberOfClicksDecrement; i++) {
+            decrementButton.click();
+        }
+
+        String actualNumberOfKidsAfterSecondDecrement = kidsNumber.getText();
+        String expectedNumberOfKidsAfterSecondDecrement = String.valueOf(0 + numberOfClicksDecrement);
+        System.out.println("Actual number of kids after the second decrement is: " + actualNumberOfKidsAfterSecondDecrement);
+        System.out.println("Expected number of kids after the second decrement is: " + expectedNumberOfKidsAfterSecondDecrement);
+        Assert.assertEquals(actualNumberOfKidsAfterSecondDecrement, expectedNumberOfKidsAfterSecondDecrement, "The number of kids after the second decrement does not match the expected value!");
+    }
+
+    @Test
+    public void testSearchButton(){
+
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        // URL launch
+        driver.get("https://ancabota09.wixsite.com/intern");
+        // Explicit wait
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement iframe = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
+        driver.switchTo().frame(iframe);
+
+        //Check if the Search button is displayed
+        WebElement searchButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"search-widget\"]/form/ul/li[6]/button/span")));
+        // Verifică dacă este vizibil
+        Assert.assertTrue(searchButton.isDisplayed(), "Search button is not displayed");
+
+        //Enter valid data into Check In, Check Out, Adults & Kids
+
+        //for check in
+        WebElement calendarCheckInButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"check-in\"]/span[2]")));
+       // Assert.assertTrue(calendarCheckInButton.isDisplayed(), "Check in calendar button is not displayed");
+
+        calendarCheckInButton.click();
+        driver.switchTo().defaultContent();
+
+        WebElement iframeCheckInCalendar = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("U73P_q")));
+        driver.switchTo().frame(iframeCheckInCalendar);
+
+        //WebElement calendarCheckIn = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div")));
+        //Assert.assertTrue(calendarCheckIn.isDisplayed(), "Calendar did not open as expected");
+
+        //click on a chosen date
+        //se schimba xpath!!!!!(de pe data)
+        WebElement checkInDay = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div/main/div/div[2]/table/tbody/tr[4]/td[4]/button/span")));
+        //Assert.assertTrue(checkInDay.isDisplayed(), "Check in calendar day button is not displayed");
+        checkInDay.click();
+        driver.switchTo().defaultContent();
+        driver.switchTo().frame(iframe);
+
+        WebElement checkInDate = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("check-in-value")));
+        String actualValueOfCheckInDate = checkInDate.getText();
+        System.out.println("The check in day is: " + actualValueOfCheckInDate);
+
+        String expectedValueOfCheckInDate = "21 Aug 2024";
+        System.out.println("Expected Check in date is: " + expectedValueOfCheckInDate);
+
+        Assert.assertEquals(actualValueOfCheckInDate, expectedValueOfCheckInDate,"Check in date date does not corespond!");
+
+        //for check out
+        driver.switchTo().defaultContent();
+        driver.switchTo().frame(iframe);
+
+        WebElement calendarCheckOutButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"check-out\"]/span[2]")));
+        //Assert.assertTrue(calendarCheckOutButton.isDisplayed(), "Check out calendar button is not displayed");
+
+        calendarCheckOutButton.click();
+        driver.switchTo().defaultContent();
+
+        WebElement iframeCheckOutCalendar = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("U73P_q")));
+        driver.switchTo().frame(iframeCheckOutCalendar);
+
+        //WebElement calendarCheckOut = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div")));
+        //Assert.assertTrue(calendarCheckOut.isDisplayed(), "Calendar did not open as expected");
+
+        //click on a chosen date
+        //se schimba xpath(data de pe calendar)
+        WebElement checkOutDay = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div/main/div/div[2]/table/tbody/tr[5]/td[5]/button/span")));
+        //Assert.assertTrue(checkOutDay.isDisplayed(), "Check out calendar day button is not displayed");
+        checkOutDay.click();
+        driver.switchTo().defaultContent();
+        driver.switchTo().frame(iframe);
+
+        WebElement checkOutDate = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("check-out-value")));
+        String actualValueOfCheckOutDate = checkOutDate.getText();
+        System.out.println("The check out date is: " + actualValueOfCheckOutDate);
+
+        String expectedValueOfCheckOutDate = "29 Aug 2024";
+        System.out.println("Expected Check out date is: " + expectedValueOfCheckOutDate);
+
+        Assert.assertEquals(actualValueOfCheckOutDate, expectedValueOfCheckOutDate,"Check out date does not corespond!");
+
+        //for number of adults
+        WebElement adultsNumber = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]/span[1]")));
+        // Verifică dacă este vizibil
+        Assert.assertTrue(adultsNumber.isDisplayed(), "Adults number is not displayed");
+
+        WebElement incrementAdultsButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]/a[1]")));
+        int numberOfClicksIncrementAdults = 1;
+        // Clic pe butonul de incrementare
+        for (int i = 0; i < numberOfClicksIncrementAdults; i++) {
+            incrementAdultsButton.click();
+        }
+
+        String actualNumberOfAdultsAfterIncrement = adultsNumber.getText();
+        String expectedNumberOfAdultsAfterIncrement = String.valueOf(1 + numberOfClicksIncrementAdults);
+        System.out.println("Actual number of adults after increment is: " + actualNumberOfAdultsAfterIncrement);
+        System.out.println("Expected number of adults after increment is: " + expectedNumberOfAdultsAfterIncrement);
+        Assert.assertEquals(actualNumberOfAdultsAfterIncrement, expectedNumberOfAdultsAfterIncrement, "The number of adults after increment does not match the expected value!");
+
+        //for number of kids
+        WebElement kidsNumber = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"children\"]/span[1]")));
+        // Verifică dacă este vizibil
+        Assert.assertTrue(kidsNumber.isDisplayed(), "Kids number is not displayed");
+
+        WebElement incrementKidsButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"children\"]/a[1]")));
+        int numberOfClicksIncrementKids = 1;
+        // Clic pe butonul de incrementare
+        for (int i = 0; i < numberOfClicksIncrementKids; i++) {
+            incrementKidsButton.click();
+        }
+
+        String actualNumberOfKidsAfterIncrement = kidsNumber.getText();
+        String expectedNumberOfKidsAfterIncrement = String.valueOf(0 + numberOfClicksIncrementKids);
+        System.out.println("Actual number of kids after increment is: " + actualNumberOfKidsAfterIncrement);
+        System.out.println("Expected number of kids after increment is: " + expectedNumberOfKidsAfterIncrement);
+        Assert.assertEquals(actualNumberOfKidsAfterIncrement, expectedNumberOfKidsAfterIncrement, "The number of kids after increment does not match the expected value!");
+
+        //Click on search button
+        searchButton.click();
+        System.out.println("URL of the Rooms page is: " + driver.getCurrentUrl());
+        String actualRoomsPageURL = driver.getCurrentUrl();
+        String expectedRoomsPageURL ="https://ancabota09.wixsite.com/intern/rooms/%3Fadults%3D2%26checkIn%3D1724198400000%26checkOut%3D1724889600000%26children%3D1";
+        Assert.assertEquals(actualRoomsPageURL, expectedRoomsPageURL, "The Rooms page does not load!");
     }
 
 }
