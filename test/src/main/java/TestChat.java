@@ -23,6 +23,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class TestChat {
+
     private WebDriver driver;
 
     @BeforeClass

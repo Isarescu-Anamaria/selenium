@@ -22,6 +22,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class SearchWidgetHomePage {
@@ -78,24 +79,29 @@ public class SearchWidgetHomePage {
         driver.switchTo().defaultContent();
         driver.switchTo().frame(iframeCheckInCalendar);
 
+        LocalDate nowDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d, EEEE MMMM yyyy", Locale.ENGLISH);
+        String valueOfToday = nowDate.format(formatter);
+
         //click on today
         //se schimba today xpath!!!!!(de pe data)
-        WebElement today = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div/main/div/div[2]/table/tbody/tr[2]/td[5]/button/span")));
+        WebElement todayButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@aria-label='" + valueOfToday + "']")));
         // Verifică dacă butonul este vizibil
-        Assert.assertTrue(today.isDisplayed(), "Check in calendar today button is not displayed");
-        today.click();
+        Assert.assertTrue(todayButton.isDisplayed(), "Check in calendar today button is not displayed");
+
+        todayButton.click();
         driver.switchTo().defaultContent();
         driver.switchTo().frame(iframe);
+
+        DateTimeFormatter formatterForDisplay = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH);
+        String expectedDisplayValueOfToday = nowDate.format(formatterForDisplay);
+
         WebElement todayDate = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("check-in-value")));
         String actualValueOfToday = todayDate.getText();
-        System.out.println("Today is: " + actualValueOfToday);
+        System.out.println("Actual Today date is: " + actualValueOfToday);
+        System.out.println("Expected Today date is: " + expectedDisplayValueOfToday);
 
-        LocalDate nowDate = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM yyyy");
-        String expectedValueOfToday = nowDate.format(formatter);
-        System.out.println("Expected Today date is: " + expectedValueOfToday);
-
-        Assert.assertEquals(actualValueOfToday, expectedValueOfToday,"Today date does not corespond!");
+        Assert.assertEquals(actualValueOfToday, expectedDisplayValueOfToday,"Today date does not corespond!");
     }
 
     @Test
@@ -139,13 +145,13 @@ public class SearchWidgetHomePage {
         // Clic pe butonul de navigare înainte
         for (int i = 0; i < numberOfClicks; i++) {
             checkInForwardButton.click();
+            driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
         }
 
         String actualForwardMonth = month.getText();
         System.out.println("Actual Forward month is: " + actualForwardMonth);
 
         Assert.assertEquals(actualForwardMonth, expectedForwardMonth,"Forward month does not corespond!");
-
 
         //backward months test
         WebElement checkInBackwardButton = wait.until(ExpectedConditions.elementToBeClickable(By.className("navigate-left")));
@@ -156,10 +162,12 @@ public class SearchWidgetHomePage {
 
         String expectedBackwardMonth = pastMonth.format(formatter);
         System.out.println("Expected Backward Month is: " + expectedBackwardMonth);
+
         int numberOfClicksBackward = numberOfClicks + 3;
         // Clic pe butonul de navigare înapoi
         for (int i = 0; i < numberOfClicksBackward; i++) {
            checkInBackwardButton.click();
+            driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
         }
 
         String actualBackwardMonth = month.getText();
@@ -270,6 +278,7 @@ public class SearchWidgetHomePage {
         // Clic pe butonul de navigare înainte
         for (int i = 0; i < numberOfClicks; i++) {
             checkOutForwardButton.click();
+            driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
         }
 
         String actualForwardMonth = month.getText();
@@ -291,6 +300,7 @@ public class SearchWidgetHomePage {
         // Clic pe butonul de navigare înapoi
         for (int i = 0; i < numberOfClicksBackward; i++) {
             checkOutBackwardButton.click();
+            driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
         }
 
         String actualBackwardMonth = month.getText();
@@ -537,5 +547,6 @@ public class SearchWidgetHomePage {
         String expectedRoomsPageURL ="https://ancabota09.wixsite.com/intern/rooms/%3Fadults%3D2%26checkIn%3D1724198400000%26checkOut%3D1724889600000%26children%3D1";
         Assert.assertEquals(actualRoomsPageURL, expectedRoomsPageURL, "The Rooms page does not load!");
     }
+
 
 }
