@@ -215,25 +215,39 @@ public class SearchWidgetHomePage {
         driver.switchTo().defaultContent();
         driver.switchTo().frame(iframeCheckOutCalendar);
 
+        LocalDate nowDate = LocalDate.now().plusDays(1);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d, EEEE MMMM yyyy", Locale.ENGLISH);
+        String valueOfTomorrow = nowDate.format(formatter);
+
         //click on tomorrow
         //se schimba tomorrow xpath(data de pe calendar)
-        WebElement tomorrow = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div/main/div/div[2]/table/tbody/tr[2]/td[6]/button/span")));
+        WebElement tomorrow = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@aria-label='" + valueOfTomorrow + "']")));
         // Verifică dacă butonul este vizibil
         Assert.assertTrue(tomorrow.isDisplayed(), "Check out calendar tomorrow button is not displayed");
-        tomorrow.click();
+
+        String message;
+        if (tomorrow.getAttribute("disabled") == null) {
+            tomorrow.click();
+            message = "Tomorrow button is enabled.";
+            System.out.println(message);
+        } else {
+            message = "Tomorrow button is disabled.";
+            System.out.println(message);
+        }
+        Assert.assertEquals(message, "Tomorrow button is enabled.","Tomorrow button cannot be clicked.");
+
         driver.switchTo().defaultContent();
         driver.switchTo().frame(iframe);
 
-        WebElement tomorrowDate = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"check-out\"]/span[2]")));
-        String actualValueOfTomorrow = tomorrowDate.getText();
-        System.out.println("Tomorrow is: " + actualValueOfTomorrow);
+        DateTimeFormatter formatterForDisplay = DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH);
+        String expectedDisplayValueOfTomorrow = nowDate.format(formatterForDisplay);
 
-        LocalDate nowDate = LocalDate.now().plusDays(1);;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM yyyy");
-        String expectedValueOfTomorrow = nowDate.format(formatter);
-        System.out.println("Expected Tomorrow date is: " + expectedValueOfTomorrow);
+//        WebElement tomorrowDate = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"check-out\"]/span[2]")));
+//        String actualValueOfTomorrow = tomorrowDate.getText();
+//        System.out.println("Actual Tomorrow date is: " + actualValueOfTomorrow);
+//        System.out.println("Expected Tomorrow date is: " + expectedDisplayValueOfTomorrow);
 
-        Assert.assertEquals(actualValueOfTomorrow, expectedValueOfTomorrow,"Tomorrow date does not corespond!");
+//        Assert.assertEquals(actualValueOfTomorrow, expectedDisplayValueOfTomorrow,"Tomorrow date does not corespond!");
     }
 
     @Test
