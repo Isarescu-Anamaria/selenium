@@ -1,10 +1,7 @@
 //--
-import org.openqa.selenium.By;
+import org.openqa.selenium.*;
 //--
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
 //--
-import org.openqa.selenium.WebElement;
 //--
 import org.openqa.selenium.chrome.ChromeDriver;
 
@@ -24,8 +21,12 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class RoomsPage {
@@ -983,6 +984,17 @@ public class RoomsPage {
 
         WebElement incrementAdultsButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]/a[1]")));
         int numberOfClicksIncrementAdults = Integer.parseInt(maxAdultsText.trim());
+
+        // Derulează la element folosind JavaScript
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", incrementAdultsButton);
+
+        // Așteaptă puțin pentru ca scroll-ul să se finalizeze
+        try {
+            Thread.sleep(1000); // Poți ajusta timpul de așteptare după cum e nevoie
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         // Clic pe butonul de incrementare
         for (int i = 0; i < numberOfClicksIncrementAdults; i++) {
             incrementAdultsButton.click();
@@ -1059,6 +1071,110 @@ public class RoomsPage {
     @Test
     public void testSearchOneNight(){
 
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        // URL launch
+        driver.get("https://ancabota09.wixsite.com/intern");
+        // Explicit wait
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        WebElement roomsButton = driver.findElement(By.id("i6kl732v2label"));
+        Assert.assertTrue(roomsButton.isDisplayed(),"The Rooms button is not displayed!");
+        roomsButton.click();
+
+        WebElement iframe = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
+        driver.switchTo().frame(iframe);
+
+        WebElement searchButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".search.s-button")));
+
+        //Enter valid data into Check In, Check Out
+
+        //for check in
+        WebElement calendarCheckInButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("check-in")));
+        Assert.assertTrue(calendarCheckInButton.isDisplayed(), "Check in calendar button is not displayed");
+
+        calendarCheckInButton.click();
+
+        WebElement calendarCheckIn = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".calendar-popup.s-field.s-separator.visible")));
+        Assert.assertTrue(calendarCheckIn.isDisplayed(), "Calendar did not open as expected");
+
+        //click on a chosen date
+        //se schimba xpath!!!!!(de pe data)
+        WebElement checkInDayButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@aria-label='21, Wednesday August 2024']")));
+        Assert.assertTrue(checkInDayButton.isDisplayed(), "Check in calendar day button is not displayed");
+        checkInDayButton.click();
+
+        WebElement checkInDate = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("check_in-value")));
+        String actualValueOfCheckInDate = checkInDate.getText();
+        System.out.println("The check in day is: " + actualValueOfCheckInDate);
+
+        String expectedValueOfCheckInDate = "21 Aug 2024";
+        System.out.println("Expected Check in date is: " + expectedValueOfCheckInDate);
+
+        Assert.assertEquals(actualValueOfCheckInDate, expectedValueOfCheckInDate,"Check in date date does not corespond!");
+
+        //for check out
+
+        WebElement calendarCheckOut = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"hotel-container\"]/section/div/div/form/ul/li[2]/div[2]/div")));
+        Assert.assertTrue(calendarCheckOut.isDisplayed(), "Calendar did not open as expected");
+
+        //click on a chosen date
+        //se schimba xpath(data de pe calendar)
+        WebElement checkOutDay = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"hotel-container\"]/section/div/div/form/ul/li[2]/div[2]/div/div[2]/table/tbody/tr[4]/td[5]/button/span")));
+        Assert.assertTrue(checkOutDay.isDisplayed(), "Check out calendar day button is not displayed");
+        checkOutDay.click();
+
+        WebElement checkOutDate = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".placeholder.s-field")));
+        String actualValueOfCheckOutDate = checkOutDate.getText();
+        System.out.println("The check out date is: " + actualValueOfCheckOutDate);
+
+        String expectedValueOfCheckOutDate = "22 Aug 2024";
+        System.out.println("Expected Check out date is: " + expectedValueOfCheckOutDate);
+
+        Assert.assertEquals(actualValueOfCheckOutDate, expectedValueOfCheckOutDate,"Check out date does not corespond!");
+
+        //Select 2 Adult
+
+        WebElement adultsNumber = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]/span[1]")));
+        Assert.assertTrue(adultsNumber.isDisplayed(), "Adults number is not displayed");
+
+        WebElement incrementAdultsButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]/a[1]")));
+        int numberOfClicksIncrementAdults = 1;
+        // Clic pe butonul de incrementare
+        for (int i = 0; i < numberOfClicksIncrementAdults; i++) {
+            incrementAdultsButton.click();
+        }
+
+        String actualNumberOfAdultsAfterIncrement = adultsNumber.getText();
+        String expectedNumberOfAdultsAfterIncrement = String.valueOf(1 + numberOfClicksIncrementAdults);
+        System.out.println("Actual number of adults after increment is: " + actualNumberOfAdultsAfterIncrement);
+        System.out.println("Expected number of adults after increment is: " + expectedNumberOfAdultsAfterIncrement);
+        Assert.assertEquals(actualNumberOfAdultsAfterIncrement, expectedNumberOfAdultsAfterIncrement, "The number of adults after increment does not match the expected value!");
+
+        //Select 0 Kids
+
+        WebElement kidsNumber = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"children\"]/span[1]")));
+        // Verifică dacă este vizibil
+        Assert.assertTrue(kidsNumber.isDisplayed(), "Kids number is not displayed");
+
+        WebElement incrementKidsButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"children\"]/a[1]")));
+        int numberOfClicksIncrementKids = 0;
+        // Clic pe butonul de incrementare
+        for (int i = 0; i < numberOfClicksIncrementKids; i++) {
+            incrementKidsButton.click();
+        }
+
+        String actualNumberOfKidsAfterIncrement = kidsNumber.getText();
+        String expectedNumberOfKidsAfterIncrement = String.valueOf(0 + numberOfClicksIncrementKids);
+        System.out.println("Actual number of kids after increment is: " + actualNumberOfKidsAfterIncrement);
+        System.out.println("Expected number of kids after increment is: " + expectedNumberOfKidsAfterIncrement);
+        Assert.assertEquals(actualNumberOfKidsAfterIncrement, expectedNumberOfKidsAfterIncrement, "The number of kids after increment does not match the expected value!");
+
+        //Click on search button
+        searchButton.click();
+        System.out.println("URL of the Rooms page is: " + driver.getCurrentUrl());
+        String actualRoomsPageURL = driver.getCurrentUrl();
+        String expectedRoomsPageURL = "https://ancabota09.wixsite.com/intern/rooms/rooms/%3FcheckIn%3D1724198400000%26checkOut%3D1724457600000%26adults%3D1%26children%3D0";
+        Assert.assertEquals(expectedRoomsPageURL, actualRoomsPageURL, "The Rooms page does not load!");
     }
 
     @Test
@@ -1380,15 +1496,21 @@ public class RoomsPage {
         //Click on the Standard suite name button
         standardSuiteImageButton.click();
 
-//        wait.until(ExpectedConditions.urlToBe("https://ancabota09.wixsite.com/intern/rooms/rooms/afda6ba1-efd1-4432-bd42-dd678bd4beb4%3FcheckIn%3D1724198400000%26checkOut%3D1724889600000%26adults%3D2%26children%3D0%26price%3D1"));
-//
-//        System.out.println("URL of the Standard Suite room is : " + driver.getCurrentUrl());
-//        String actualStandardSuitePageURL = driver.getCurrentUrl();
-//        String expectedStandardSuitePageURL = "https://ancabota09.wixsite.com/intern/rooms/rooms/afda6ba1-efd1-4432-bd42-dd678bd4beb4%3FcheckIn%3D1724198400000%26checkOut%3D1724889600000%26adults%3D2%26children%3D0%26price%3D1";
-//        Assert.assertEquals(actualStandardSuitePageURL, expectedStandardSuitePageURL,  "The Standard Suite room page does not load!");
+        wait.until(ExpectedConditions.urlToBe("https://ancabota09.wixsite.com/intern/rooms/rooms/afda6ba1-efd1-4432-bd42-dd678bd4beb4%3FcheckIn%3D1724198400000%26checkOut%3D1724889600000%26adults%3D2%26children%3D0%26price%3D1"));
 
-        WebElement iframeSearch = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
+        System.out.println("URL of the Standard Suite room is : " + driver.getCurrentUrl());
+        String actualStandardSuitePageURL = driver.getCurrentUrl();
+        String expectedStandardSuitePageURL = "https://ancabota09.wixsite.com/intern/rooms/rooms/afda6ba1-efd1-4432-bd42-dd678bd4beb4%3FcheckIn%3D1724198400000%26checkOut%3D1724889600000%26adults%3D2%26children%3D0%26price%3D1";
+        Assert.assertEquals(actualStandardSuitePageURL, expectedStandardSuitePageURL,  "The Standard Suite room page does not load!");
+
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         driver.switchTo().defaultContent();
+        WebElement iframeSearch = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"i6klgqap_0\"]/iframe")));
         driver.switchTo().frame(iframeSearch);
 
         WebElement roomSearchDataResults = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".widget.s-separator.s-background2.breakdown-widget")));
@@ -1397,14 +1519,97 @@ public class RoomsPage {
         //Check the Check In date
 
         WebElement checkInResultDate = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("check_in-value")));
-        String actualValueOfCheckInResultDate = checkInDate.getText();
-        System.out.println("The check in day is: " + actualValueOfCheckInResultDate);
+        String actualValueOfCheckInResultDate = checkInResultDate.getText();
+        System.out.println("The check in result day is: " + actualValueOfCheckInResultDate);
 
         String expectedValueOfCheckInResultDate = "21 Aug 2024";
-        System.out.println("Expected Check in date is: " + expectedValueOfCheckInResultDate);
+        System.out.println("Expected Check in result date is: " + expectedValueOfCheckInResultDate);
 
         Assert.assertEquals(actualValueOfCheckInResultDate, expectedValueOfCheckInResultDate,"Check in result date is not correct!");
 
+        //Check the Check Out date
+
+        WebElement checkOutResultDate = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("check_out-value")));
+        String actualValueOfCheckOutResultDate = checkOutResultDate.getText();
+        System.out.println("The check out result day is: " + actualValueOfCheckOutResultDate);
+
+        String expectedValueOfCheckOutResultDate = "29 Aug 2024";
+        System.out.println("Expected Check out result date is: " + expectedValueOfCheckOutResultDate);
+
+        Assert.assertEquals(actualValueOfCheckOutResultDate, expectedValueOfCheckOutResultDate,"Check out result date is not correct!");
+
+        //Check the adults number
+
+        WebElement resultNumberOfAdults = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"adults\"]/span[1]")));
+        String actualResultNumberOfAdults = resultNumberOfAdults.getText();
+        System.out.println("The actual result number of adults is: " + actualResultNumberOfAdults);
+
+        String expectedResultNumberOfAdults = "2";
+        System.out.println("The expected result number of adults is: " + expectedResultNumberOfAdults);
+
+        Assert.assertEquals(actualResultNumberOfAdults, expectedResultNumberOfAdults,"The number of adults resulted is not correct!");
+
+        //Check the kids number
+
+//        WebElement resultNumberOfKids = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("")));
+//        String actualResultNumberOfKids = resultNumberOfKids.getText();
+//        System.out.println("The actual result number of kids is: " + actualResultNumberOfKids);
+//
+//        String expectedResultNumberOfKids = "0";
+//        System.out.println("The expected result number of kids is: " + expectedResultNumberOfKids);
+//
+//        Assert.assertEquals(actualResultNumberOfKids, expectedResultNumberOfKids,"The number of kids resulted is not correct!");
+
+        //Check the cost per night
+        WebElement oneNightCost = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"singleroom\"]/div[2]/div[1]/span[2]")));
+        Assert.assertTrue(oneNightCost.isDisplayed(),"The cost is not displayed!");
+
+        String oneNightCostString = oneNightCost.getText();
+        // Elimină simbolurile de monedă și convertește în double
+        double oneNightPrice = Double.parseDouble(oneNightCostString.replaceAll("[^\\d.]", "").trim());
+        System.out.println("Cost per night: " + oneNightPrice);
+
+        //Check total nights x cost per night (numarul de nopti)
+        WebElement totalNightsAndCost = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"singleroom\"]/div[2]/div[3]/table/tbody/tr[1]/td[1]")));
+        Assert.assertTrue(totalNightsAndCost.isDisplayed(),"The total number of nights is not displayed!");
+
+        String totalNightsAndCostString = totalNightsAndCost.getText();
+        System.out.println("Total nights and cost string: " + totalNightsAndCostString);
+
+        Assert.assertTrue(totalNightsAndCostString.contains(String.valueOf(oneNightCost)), "The cost per night is not found in the total nights and cost string!");
+
+        //
+        WebElement totalNights = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"singleroom\"]/div[2]/div[3]/table/tbody/tr[1]/td[1]/span[2]")));
+        Assert.assertTrue(totalNights.isDisplayed(),"The total number of nights is not displayed!");
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
+
+        LocalDate checkIn = LocalDate.parse(actualValueOfCheckInResultDate, formatter);
+        LocalDate checkOut = LocalDate.parse(actualValueOfCheckOutResultDate, formatter);
+
+        long expectedNights = ChronoUnit.DAYS.between(checkIn, checkOut);
+        System.out.println("Total number of nights: " + expectedNights);
+
+        String totalNightsString = totalNights.getText();
+        long actualNights =  Long.parseLong(totalNightsString.trim());
+
+        Assert.assertEquals(actualNights, expectedNights, "Number of nights is not correct!");
+
+        //Check the Total amount of costs
+
+        WebElement totalCost = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"singleroom\"]/div[2]/div[3]/table/tbody/tr[2]/td[2]")));
+        Assert.assertTrue(totalCost.isDisplayed(),"The total cost is not displayed!");
+
+        //String oneNightCostString = oneNightCost.getText();
+        //double oneNightPrice = Double.parseDouble(oneNightCostString.replaceAll("[^\\d.]", "").trim());
+
+        double expectedTotalCost = oneNightPrice * actualNights;
+        System.out.println("Expected total cost: " + expectedTotalCost);
+
+        String totalCostString = totalCost.getText();
+        double actualTotalCost = Double.parseDouble(totalCostString.replaceAll("[^\\d.]", "").trim());
+
+        Assert.assertEquals(actualTotalCost, expectedTotalCost, "The total cost is not correct!");
 
     }
 
@@ -1611,9 +1816,25 @@ public class RoomsPage {
         Assert.assertTrue(roomsButton.isDisplayed(),"The Rooms button is not displayed!");
         roomsButton.click();
 
+        WebElement iframe = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("nKphmK")));
+        driver.switchTo().frame(iframe);
+
         //Hover on any amenities icon
 
-        
+        WebElement amenityElement = wait.until(ExpectedConditions.elementToBeClickable(By.className("amenity")));
+
+        // Scroll the element into view
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", amenityElement);
+
+        // Hover
+        Actions actions = new Actions(driver);
+        actions.moveToElement(amenityElement).build().perform();
+
+        WebElement tooltipElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".amenity[tooltip]")));
+        String actualTooltipText = tooltipElement.getAttribute("tooltip");
+        String expectedTooltipText = "A/C"; // Înlocuiește cu textul așteptat
+        System.out.println("Actual Tooltip text: " + actualTooltipText);
+        Assert.assertEquals(actualTooltipText, expectedTooltipText, "The amenity text is not relevant!");
 
     }
 

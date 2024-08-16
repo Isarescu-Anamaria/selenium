@@ -34,25 +34,7 @@ public class TestNavBarHomePage {
 
     //BOOK NOW button
     //if exists test
-    @Test
-    public void testBookNowButtonExists() {
 
-        //implicit wait
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        //URL launch
-        driver.get("https://ancabota09.wixsite.com/intern");
-        //identify button with partial link text
-        WebElement bookNowButton = driver.findElement(By.partialLinkText("BOOK NOW"));
-        //check if element is visible
-        boolean var = driver.findElement(By.partialLinkText("BOOK NOW")).isDisplayed();
-        if (var) {
-            System.out.println("BOOK NOW button is displayed");
-        }
-        else{
-            System.out.println("BOOK NOW button is not displayed");
-        }
-
-    }
 
     @Test
     public void testBookNowButton() {
@@ -63,15 +45,10 @@ public class TestNavBarHomePage {
         driver.get("https://ancabota09.wixsite.com/intern");
         //identify button with partial link text
         WebElement bookNowButton = driver.findElement(By.linkText("BOOK NOW"));
-        boolean var = driver.findElement(By.partialLinkText("BOOK NOW")).isDisplayed();
-        if (var) {
-            System.out.println("BOOK NOW button is displayed");
-            bookNowButton.click();
-        }
-        else{
-            System.out.println("BOOK NOW button is not displayed");
-            Assert.fail();
-        }
+        Assert.assertTrue(bookNowButton.isDisplayed(),"The book now button is not displayed");
+
+        bookNowButton.click();
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
         System.out.println("URL of the page is: " + driver.getCurrentUrl());
         String bookNowPageURL = driver.getCurrentUrl();
@@ -86,17 +63,14 @@ public class TestNavBarHomePage {
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         //URL launch
         driver.get("https://ancabota09.wixsite.com/intern");
-        //identify button with
+        //identify button with id
         WebElement homeButton = driver.findElement(By.id("i6kl732v0label"));
-        boolean var = driver.findElement(By.id("i6kl732v0label")).isDisplayed();
-        if (var) {
-            System.out.println("HOME button is displayed");
-            homeButton.click();
-        }
-        else{
-            System.out.println("HOME button is not displayed");
-            Assert.fail();
-        }
+
+        Assert.assertTrue(homeButton.isDisplayed(),"The home button is not displayed");
+
+        homeButton.click();
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
         System.out.println("URL of the page is: " + driver.getCurrentUrl());
         String homePageURL = driver.getCurrentUrl();
         String homeURL ="https://ancabota09.wixsite.com/intern";
@@ -110,17 +84,14 @@ public class TestNavBarHomePage {
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         //URL launch
         driver.get("https://ancabota09.wixsite.com/intern");
-        //identify button with
+        //identify button with id
         WebElement exploreButton = driver.findElement(By.id("i6kl732v1label"));
-        boolean var = driver.findElement(By.id("i6kl732v1label")).isDisplayed();
-        if (var) {
-            System.out.println("EXPLORE button is displayed");
-            exploreButton.click();
-        }
-        else{
-            System.out.println("EXPLORE button is not displayed");
-            Assert.fail();
-        }
+
+        Assert.assertTrue(exploreButton.isDisplayed(),"The explore button is not displayed");
+
+        exploreButton.click();
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
         System.out.println("URL of the Explore page is: " + driver.getCurrentUrl());
         String explorePageURL = driver.getCurrentUrl();
         String exploreURL ="https://ancabota09.wixsite.com/intern/explore";
@@ -134,17 +105,15 @@ public class TestNavBarHomePage {
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         //URL launch
         driver.get("https://ancabota09.wixsite.com/intern");
-        //identify button with
+
+        //identify button with id
         WebElement roomsButton = driver.findElement(By.id("i6kl732v2label"));
-        boolean var = driver.findElement(By.id("i6kl732v2label")).isDisplayed();
-        if (var) {
-            System.out.println("ROOMS button is displayed");
-            roomsButton.click();
-        }
-        else{
-            System.out.println("ROOMS button is not displayed");
-            Assert.fail();
-        }
+        Assert.assertTrue(roomsButton.isDisplayed(),"The Rooms button is not displayed!");
+
+        roomsButton.click();
+
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
         System.out.println("URL of the Rooms page is: " + driver.getCurrentUrl());
         String roomsPageURL = driver.getCurrentUrl();
         String roomsURL ="https://ancabota09.wixsite.com/intern/rooms";
@@ -160,15 +129,12 @@ public class TestNavBarHomePage {
         driver.get("https://ancabota09.wixsite.com/intern");
         //identify button with
         WebElement contactButton = driver.findElement(By.id("i6kl732v3label"));
-        boolean var = driver.findElement(By.id("i6kl732v3label")).isDisplayed();
-        if (var) {
-            System.out.println("CONTACT button is displayed");
-            contactButton.click();
-        }
-        else{
-            System.out.println("CONTACT button is not displayed");
-            Assert.fail();
-        }
+
+        Assert.assertTrue(contactButton.isDisplayed(),"The contact button is not displayed");
+
+        contactButton.click();
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
         System.out.println("URL of the Contact page is: " + driver.getCurrentUrl());
         String contactPageURL = driver.getCurrentUrl();
         String contactURL ="https://ancabota09.wixsite.com/intern/contact";
@@ -182,18 +148,13 @@ public class TestNavBarHomePage {
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         //URL launch
         driver.get("https://ancabota09.wixsite.com/intern");
-        //identify button with
+        //identify button with partial link text
         WebElement pageTitleButton = driver.findElement(By.partialLinkText("HOME & AWAY"));
-        //check if element is visible
-        boolean var = driver.findElement(By.partialLinkText("HOME & AWAY")).isDisplayed();
-        if (var) {
-            System.out.println("HOME & AWAY button is displayed");
-            pageTitleButton.click();
-        }
-        else{
-            System.out.println("HOME & AWAY button is not displayed");
-            Assert.fail();
-        }
+
+        Assert.assertTrue(pageTitleButton.isDisplayed(),"The page title button is not displayed");
+
+        pageTitleButton.click();
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
         String initialWindowHandle = driver.getWindowHandle();
         for (String windowHandle : driver.getWindowHandles()) {

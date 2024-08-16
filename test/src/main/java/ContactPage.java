@@ -46,6 +46,7 @@ public class ContactPage {
         WebElement contactButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("i6kl732v3label")));
 
         contactButton.click();
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
         // Verifică dacă URL-ul curent este cel așteptat
         String expectedURL = "https://ancabota09.wixsite.com/intern/contact";
@@ -72,7 +73,7 @@ public class ContactPage {
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         // URL launch
         driver.get("https://ancabota09.wixsite.com/intern/contact");
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
 
         //scroll down
         JavascriptExecutor jse = (JavascriptExecutor) driver;
@@ -154,7 +155,7 @@ public class ContactPage {
         // URL launch
         driver.get("https://ancabota09.wixsite.com/intern/contact");
         // Explicit wait
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
         // Scroll down
         JavascriptExecutor jse = (JavascriptExecutor) driver;
         jse.executeScript("window.scrollBy(0,350)");
@@ -182,7 +183,6 @@ public class ContactPage {
         System.out.println("The typed email is: " + actualEmail);
         Assert.assertEquals(actualEmail, emailKey, "The email does not corespond!");
 
-
         //Enter a valid phone number
         WebElement phoneNumberField = wait.until(ExpectedConditions.elementToBeClickable(By.id("input_comp-jxbsa1ev")));
         Assert.assertTrue(phoneNumberField.isDisplayed(), "The phone number filed is not displayed!");
@@ -200,6 +200,7 @@ public class ContactPage {
 
         String messageKey =  "This is a sample message to test the contact form functionality with a specific number of characters included.";
         messageField.sendKeys(messageKey);
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
         String actualMessage = messageField.getAttribute("value");
         System.out.println("The typed message is: " + actualMessage);
@@ -210,6 +211,7 @@ public class ContactPage {
         Assert.assertTrue(submitButton.isDisplayed(), "The submit button is not displayed!");
 
         submitButton.click();
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         WebElement confirmationMesasge = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"comp-jxbsa1fv\"]/p/span")));
         Assert.assertTrue(confirmationMesasge.isDisplayed(), "The submit button is not displayed!");
 
